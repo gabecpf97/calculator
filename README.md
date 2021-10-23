@@ -1,0 +1,1 @@
+This is a simple web page that simulate a calculator using javascript html and css.
