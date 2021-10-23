@@ -5,9 +5,21 @@ createPad();
  * Function that call other function to create the whole pad
  */
 function createPad() {
+    createDisplay();
     createNumPad();
     createOp();
-    createEqualAC();
+    createEqualResultAC();
+}
+
+/**
+ * Function that create the display for number entered or result
+ */
+function createDisplay() {
+    const container = document.querySelector('.container');
+    const display = document.createElement('div');
+    display.classList.add('display');
+    display.textContent = "0";
+    container.appendChild(display);
 }
 
 /**
@@ -38,9 +50,9 @@ function createOp() {
 }
 
 /**
- * Create equal sign in pad
+ * Create equal, AC button in pad
  */
-function createEqualAC() {
+function createEqualResultAC() {
     const container = document.querySelector('.container');
     const equalSign = document.createElement('button');
     const acSign = document.createElement('button');
@@ -167,35 +179,52 @@ function clickNum(butt) {
     } else {
         currEquation['y'] += value;
     }
-    console.log(currEquation);
+    document.querySelector('.display').textContent = value;
 }
 
 /**
  * Function that store the operator being clicked to
- * the equation object
+ * the equation object and display the result if there
+ * are already two value entered
  * @param {*} butt button that are being clicked
  */
 function clickOp(butt) {
     let name = butt.classList.item(0);
     let value = name.substring(name.length - 1);
+    if (currEquation['y'] != "") {
+        clickEqual();
+    }    
     currEquation['operator'] = value;
     currEquation['firstDone'] = true;
-    console.log(currEquation);
+
 }
 
 /**
  * Function that call operate function which calculate 
  * the result and store it to the first number in the 
- * equation object
+ * equation object and display it in the result div.
+ * Would not work if there are missing value of the two number
+ * or it is dividing zero 
  */
 function clickEqual() {
-    let x = parseInt(currEquation['x']);
-    let y = parseInt(currEquation['y']);
-    let op = currEquation['operator'];
-    let result = operate(x, y, op)
-    clickAC();
-    currEquation['x'] = result;
-    console.log(currEquation);
+    if (currEquation['x'] != "" && currEquation['y'] != "" && 
+                        currEquation['operator'] != "") {
+        let x = parseInt(currEquation['x']);
+        let y = parseInt(currEquation['y']);
+        let op = currEquation['operator'];
+        if (op == '/' && y == 0) {
+            alert('Cannot divide by zero, please type the number again');
+            currEquation['y'] = "";
+        } else {
+            let result = operate(x, y, op)
+            if (!Number.isInteger(result)){
+                result = Math.round(result * 1000) / 1000
+            }
+            clickAC();
+            currEquation['x'] = result;
+            document.querySelector('.display').textContent = result;
+        }
+    }
 }
 
 /**
@@ -208,5 +237,5 @@ function clickAC() {
         else 
             currEquation[key] = "";
     }
-    console.log(currEquation);
+    document.querySelector('.display').textContent = "0";
 }
