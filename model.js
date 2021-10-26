@@ -1,69 +1,3 @@
-// Call function to create Pad in html
-createPad();
-
-/**
- * Function that call other function to create the whole pad
- */
-function createPad() {
-    createDisplay();
-    createNumPad();
-    createOp();
-    createEqualResultAC();
-}
-
-/**
- * Function that create the display for number entered or result
- */
-function createDisplay() {
-    const container = document.querySelector('.container');
-    const display = document.createElement('div');
-    display.classList.add('display');
-    display.textContent = "0";
-    container.appendChild(display);
-}
-
-/**
- * Create all the number in pad
- */
-function createNumPad() {
-    const container = document.querySelector('.container');
-    for(let i = 0; i < 10; i++) {
-        let numPad = document.createElement('button');
-        numPad.classList.add(`butt_${i}`, 'num');
-        numPad.textContent = `${i}`;
-        container.appendChild(numPad);
-    }
-}
-
-/**
- * Create all the operator in pad
- */
-function createOp() {
-    const ops = ['+', '-', '*', '/'];
-    const container = document.querySelector('.container');
-    for(op in ops){
-        let opButt = document.createElement('button');
-        opButt.classList.add(`butt_${ops[op]}`, 'op');
-        opButt.textContent = `${ops[op]}`;
-        container.appendChild(opButt);
-    }
-}
-
-/**
- * Create equal, AC button in pad
- */
-function createEqualResultAC() {
-    const container = document.querySelector('.container');
-    const equalSign = document.createElement('button');
-    const acSign = document.createElement('button');
-    equalSign.classList.add('butt_=', 'equal');
-    equalSign.textContent = '=';
-    acSign.classList.add('butt', 'ac');
-    acSign.textContent = 'AC';
-    container.appendChild(equalSign);
-    container.appendChild(acSign);
-}
-
 /**
  * Function that add two numbers
  * @param {*} x first number
@@ -162,6 +96,14 @@ butts.forEach(butt => {
             case 'ac':
                 clickAC();
                 break;
+
+            case 'pos_neg':
+                clickPosNeg();
+                break;
+            
+            case 'percent':
+                clickPercent();
+                break;
         }
     });
 });
@@ -176,10 +118,11 @@ function clickNum(butt) {
     let value = name.substring(name.length - 1);
     if (currEquation['firstDone'] == false) {
         currEquation['x'] += value;
+        document.querySelector('.display').textContent = currEquation['x'];
     } else {
         currEquation['y'] += value;
+        document.querySelector('.display').textContent = currEquation['y'];
     }
-    document.querySelector('.display').textContent = value;
 }
 
 /**
@@ -218,12 +161,14 @@ function clickEqual() {
         } else {
             let result = operate(x, y, op)
             if (!Number.isInteger(result)){
-                result = Math.round(result * 1000) / 1000
+                result = Math.round(result * 100000000) / 100000000
             }
             clickAC();
             currEquation['x'] = result;
             document.querySelector('.display').textContent = result;
         }
+        currEquation['x'] = "" + currEquation['x'];
+        currEquation['y'] = "" + currEquation['y'];
     }
 }
 
@@ -238,4 +183,26 @@ function clickAC() {
             currEquation[key] = "";
     }
     document.querySelector('.display').textContent = "0";
+}
+
+/**
+ * Function that change the value to either positive or 
+ * negative
+ */
+function clickPosNeg() {
+    if (currEquation['x'].charAt(0) == '-'){
+        currEquation['x'] = currEquation['x'].substring(1);
+    } else {
+        currEquation['x'] = '-' + currEquation['x'];
+    }
+    document.querySelector('.display').textContent = currEquation['x'];
+}
+
+/**
+ * Function that changes the value to a percentage
+ * @param {*} butt 
+ */
+function clickPercent() {
+    currEquation['x'] = Math.round(((currEquation['x'] / 100) * 100000000)) / 100000000;
+    document.querySelector('.display').textContent = currEquation['x'];
 }

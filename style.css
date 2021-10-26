@@ -1,0 +1,49 @@
+body {
+    background-color: darkslategrey;
+}
+
+h1 {
+    text-align: center;
+    margin: 30px;
+    font-size: 48px;
+    color: darkgray;
+}
+
+.center_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    width: 400px;
+    height:600px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.display {
+    text-align: end;
+    border: 10px solid cadetblue;
+    font-size: 80px;
+    flex: 1;
+    color: bisque;
+}
+
+.pad {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* background-color: burlywood; */
+    font-weight: bold;
+}
+
+.pad.last {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+button {
+    background-color: cadetblue;
+    border-radius: 10px;
+}
