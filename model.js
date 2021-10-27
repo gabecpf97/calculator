@@ -247,3 +247,49 @@ function clickDecimal() {
         currEquation['isFloat'] = true;
     }
 }
+
+/**
+ * Add event listener to the page so that typing in keyboard will also work
+ * except for postive and negative button
+ */
+document.querySelector('body').addEventListener('keypress', (e) => {
+    let keyName = e.key;
+    if (isNaN(parseInt(keyName))) {
+        if (keyName == '-' || keyName == '+' || keyName == '/' || keyName == '*') {
+            pressOp(keyName);
+        } else {
+            switch (keyName) {
+                case '.':
+                    clickDecimal();
+                    break;
+
+                case 'Backspace':
+                    clickDelet();
+                    break;
+                
+                case 'Enter':
+                case '=':
+                    clickEqual();
+
+                default:
+                    break;
+            }
+        }
+    } else {
+        document.querySelector(`.butt_${keyName}`).dispatchEvent(new Event('click'));
+    }
+});
+
+/**
+ * Function that are being called when an operation are being 
+ * pressed
+ * @param {*} keyName operation being pressed
+ */
+function pressOp(keyName) {
+    if (currEquation['y'] != "") {
+        clickEqual();
+    }    
+    currEquation['operator'] = keyName;
+    currEquation['firstDone'] = true;
+    currEquation['isFloat'] = false;
+}
