@@ -40,10 +40,34 @@ h1 {
 }
 
 .pad.last {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 2fr 1fr 1fr;
 }
 
 button {
     background-color: cadetblue;
     border-radius: 10px;
+}
+
+.op {
+    background-color: coral;
+}
+
+.equal {
+    background-color: gray;
+}
+
+.ac {
+    background-color: aliceblue;
+}
+
+.pos_neg {
+    background-color: beige; 
+}
+
+.decimal {
+    background-color: lavender;
+}
+
+.delet {
+    background-color: gainsboro;
 }

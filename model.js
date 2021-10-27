@@ -71,6 +71,7 @@ let currEquation = {
     y: "",
     operator: "",
     firstDone: false,
+    isFloat: false,
 };
 
 /**
@@ -101,8 +102,12 @@ butts.forEach(butt => {
                 clickPosNeg();
                 break;
             
-            case 'percent':
-                clickPercent();
+            case 'decimal':
+                clickDecimal();
+                break;
+
+            case 'delet':
+                clickDelet();
                 break;
         }
     });
@@ -139,7 +144,7 @@ function clickOp(butt) {
     }    
     currEquation['operator'] = value;
     currEquation['firstDone'] = true;
-
+    currEquation['isFloat'] = false;
 }
 
 /**
@@ -152,8 +157,8 @@ function clickOp(butt) {
 function clickEqual() {
     if (currEquation['x'] != "" && currEquation['y'] != "" && 
                         currEquation['operator'] != "") {
-        let x = parseInt(currEquation['x']);
-        let y = parseInt(currEquation['y']);
+        let x = parseFloat(currEquation['x']);
+        let y = parseFloat(currEquation['y']);
         let op = currEquation['operator'];
         if (op == '/' && y == 0) {
             alert('Cannot divide by zero, please type the number again');
@@ -164,11 +169,11 @@ function clickEqual() {
                 result = Math.round(result * 100000000) / 100000000
             }
             clickAC();
-            currEquation['x'] = result;
+            currEquation['x'] = "" + result;
             document.querySelector('.display').textContent = result;
         }
-        currEquation['x'] = "" + currEquation['x'];
-        currEquation['y'] = "" + currEquation['y'];
+        if (currEquation['x'].includes('.'))
+            currEquation['isFloat'] = true;
     }
 }
 
@@ -178,6 +183,8 @@ function clickEqual() {
 function clickAC() {
     for (let key in currEquation) {
         if (key == 'firstDone')
+            currEquation[key] = false;
+        else if (key == 'isFloat')
             currEquation[key] = false;
         else 
             currEquation[key] = "";
@@ -190,19 +197,53 @@ function clickAC() {
  * negative
  */
 function clickPosNeg() {
-    if (currEquation['x'].charAt(0) == '-'){
-        currEquation['x'] = currEquation['x'].substring(1);
+    if (!currEquation['firstDone']) {
+        if (currEquation['x'].charAt(0) == '-')
+            currEquation['x'] = currEquation['x'].substring(1);
+        else 
+            currEquation['x'] = '-' + currEquation['x'];
+            document.querySelector('.display').textContent = currEquation['x'];
     } else {
-        currEquation['x'] = '-' + currEquation['x'];
+        if (currEquation['y'].charAt(0) == '-')
+            currEquation['y'] = currEquation['y'].substring(1);
+        else
+            currEquation['y'] = '-' + currEquation['y'];
+            document.querySelector('.display').textContent = currEquation['y'];
     }
-    document.querySelector('.display').textContent = currEquation['x'];
 }
 
 /**
- * Function that changes the value to a percentage
- * @param {*} butt 
+ * Function that delet the value of either first or second number
+ * if there are one digit left then it turn to zero
  */
-function clickPercent() {
-    currEquation['x'] = Math.round(((currEquation['x'] / 100) * 100000000)) / 100000000;
-    document.querySelector('.display').textContent = currEquation['x'];
+function clickDelet() {
+    if (!currEquation['firstDone'] && currEquation['x'] != "") {
+        if (currEquation['x'].length == 1)
+            currEquation['x'] = "0";
+        else 
+            currEquation['x'] = currEquation['x'].substring(0, currEquation['x'].length - 1);
+        document.querySelector('.display').textContent = currEquation['x'];
+    } else if (currEquation['firstDone'] && currEquation['y'] != ""){
+        if (currEquation['y'].length == 1)
+            currEquation['y'] = '0';
+        else
+            currEquation['y'] = currEquation['y'].substring(0, currEquation['y'].length - 1);
+        document.querySelector('.display').textContent = currEquation['y'];
+    }
+}
+
+/**
+ * Function that add decimal point to the end of the values
+ */
+function clickDecimal() {
+    if (!currEquation['isFloat']) {
+        if (currEquation['firstDone']){
+            currEquation['y'] += ".";
+            document.querySelector('.display').textContent = currEquation['y'];
+        } else {
+            currEquation['x'] += ".";
+            document.querySelector('.display').textContent = currEquation['x'];
+        }
+        currEquation['isFloat'] = true;
+    }
 }
