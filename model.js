@@ -254,6 +254,7 @@ function clickDecimal() {
  */
 document.querySelector('body').addEventListener('keypress', (e) => {
     let keyName = e.key;
+    console.log(keyName);
     if (isNaN(parseInt(keyName))) {
         if (keyName == '-' || keyName == '+' || keyName == '/' || keyName == '*') {
             pressOp(keyName);
@@ -270,6 +271,10 @@ document.querySelector('body').addEventListener('keypress', (e) => {
                 case 'Enter':
                 case '=':
                     clickEqual();
+
+                case 'Escape':
+                    clickAC();
+                    break;
 
                 default:
                     break;
